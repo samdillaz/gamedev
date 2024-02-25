@@ -21,11 +21,11 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-#include "../incl/tinyptc.h"
+#include <tinyptc.h>
 
 #ifdef __PTC_DDRAW__
 
-#include "../incl/convert.h"
+#include <convert.h>
 #define WIN32_LEAN_AND_MEAN
 #include <ddraw.h>
 

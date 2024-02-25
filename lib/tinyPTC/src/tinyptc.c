@@ -26,7 +26,7 @@
 // www.gaffer.org/tinyptc
 //
 
-#include "../incl/tinyptc.h"
+#include <tinyptc.h>
 
 
 #ifdef __PTC_WINMAIN_CRT__

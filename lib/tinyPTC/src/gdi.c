@@ -30,7 +30,7 @@
 //		when switching away .. unless i stuck all the mode switching in the wndproc too..
 //		horrible.  perhaps it should not be done.
 
-#include "../incl/tinyptc.h"
+#include <tinyptc.h>
 
 #ifdef __PTC_GDI__
 

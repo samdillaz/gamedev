@@ -6,7 +6,7 @@
 # $(5): Compiler flags
 define COMPILE
 $(2) : $(3) $(4)
-	$(1) -c -o $(2) $(3) $(5)
+	$(1) $(5) -c -o $(2) $(3) $(6)
 endef
 
 # $(1): Source file
@@ -17,7 +17,6 @@ endef
 define C2H
 $(patsubst %.c,%.h,$(patsubst %.cpp,%.hpp,$(patsubst $(SRC)%,$(INCL)%,$(1))))
 endef
-
 
 #CONFIG
 APP 		:= libtinyptc.a
@@ -47,8 +46,7 @@ ALLOBJ		:= $(foreach F,$(ALLCPPS) $(ALLCS),$(call C2O,$(F)))
 ALLINCL		:= $(foreach F,$(ALLCPPS) $(ALLCS),$(call C2H,$(F)))
 SUBDIRS		:= $(shell find $(SRC) -type d)
 OBJSUBDIRS	:= $(patsubst $(SRC)%,$(OBJ)%,$(SUBDIRS))
-INCLSUBDIRS	:= $(patsubst $(SRC)%,$(INCL)%,$(SUBDIRS))
-
+INCLSUBDIRS := $(foreach F,$(patsubst $(SRC)%,$(INCL)%,$(SUBDIRS)),-I./$(F))
 .PHONY: info
 
 # Generate Static Lib
@@ -57,8 +55,8 @@ $(APP) : $(OBJSUBDIRS) $(ALLOBJ)
 	$(RANLIB) $(APP)
 
 # Generate rules for all objects
-$(foreach F,$(ALLCPPS),$(eval $(call COMPILE,$(CC),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(CCFLAGS))))
-$(foreach F,$(ALLCS),$(eval $(call COMPILE,$(C),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(CFLAGS))))
+$(foreach F,$(ALLCPPS),$(eval $(call COMPILE,$(CC),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(INCLSUBDIRS),$(CCFLAGS))))
+$(foreach F,$(ALLCS),$(eval $(call COMPILE,$(C),$(call C2O,$(F)),$(F),$(call C2H,$(F)),$(INCLSUBDIRS),$(CFLAGS))))
 
 #$(OBJ)/%.o : $(SRC)/%.c
 #	$(C) -o $(patsubst $(SRC)%,$(OBJ)%,$@) -c $^ $(CFLAGS)
@@ -81,6 +79,5 @@ $(OBJSUBDIRS):
 clean:
 	$(RM) $(OBJSUBDIRS)/*.o
 
-cleanall:
-	$(RM) $(OBJSUBDIRS)/*.o
+cleanall: clean
 	$(RM) $(APP)

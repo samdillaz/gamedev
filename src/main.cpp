@@ -2,10 +2,10 @@ extern "C" {
     #include <tinyPTC/incl/tinyptc.h>
 }
 #include <cstdint>
+#include <iostream>
+#include <memory>
 
-using namespace std;
-
-uint32_t screen[640 * 360];
+uint32_t* screen {nullptr};
 
 constexpr uint32_t kR = 0x00FF0000;
 constexpr uint32_t kG = 0x0000FF00;
@@ -22,14 +22,19 @@ constexpr uint32_t sprite[8 * 8] = {
     kG,kG,kG,kG,kG,kG,kG,kG,
 };
 
-int main(){
-    ptc_open("window", 640, 360);
+constexpr int kSCRWIDTH {640};
+constexpr int kSCRHEIGHT {480};
 
-    for(;;){
-        for(uint32_t i = 0; i < 640 * 360; ++i)
+void execute() {
+    ptc_open("window", kSCRWIDTH, kSCRHEIGHT);
+
+    auto screen = std::make_unique<uint32_t[]>(kSCRWIDTH * kSCRHEIGHT);
+
+    while(!ptc_process_events()){
+        for(uint32_t i = 0; i < kSCRWIDTH * kSCRHEIGHT; ++i)
             screen[i] = kR;
 
-        uint32_t *pscr = screen;
+        uint32_t *pscr = screen.get();
         const uint32_t *psp = sprite;
         
         for(uint32_t i = 0; i < 8; ++i){
@@ -38,13 +43,22 @@ int main(){
                 ++pscr;
                 ++psp;
             }
-            pscr += 640 - 8;
+            pscr += kSCRWIDTH - 8;
         }
 
-        ptc_update(screen);
+        ptc_update(screen.get());
     }
 
     ptc_close();
+}
+
+
+int main(){
+    try {
+        execute();
+    } catch(...) {
+        std::cout << "Capturada\n";
+    }
 
     return 0;
 }

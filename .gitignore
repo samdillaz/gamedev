@@ -1,3 +1,4 @@
-./obj/
-./lib/tinyPTC/obj/
-./lib/picoPNG/obj/
+obj/*.o
+lib/tinyPTC/obj/
+lib/picoPNG/obj/
+.vscode/settings.json

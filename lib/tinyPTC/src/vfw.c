@@ -24,7 +24,7 @@
 // VFW implementation of TinyPTC by raster
 // - Uses the DrawDib family of functions
 
-#include "../incl/tinyptc.h"
+#include <tinyptc.h>
 
 #ifdef __PTC_VFW__
 
